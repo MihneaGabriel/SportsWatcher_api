@@ -1,0 +1,6 @@
+@SportsWatcher.WebApi_HostAddress = http://localhost:5064
+
+GET {{SportsWatcher.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

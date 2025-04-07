@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsWatcher.WebApi", "SportsWatcher.WebApi\SportsWatcher.WebApi.csproj", "{63B2B2A2-4CE0-49AA-85CF-F63C783B2D0D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{94B66470-5ECA-4095-8E1F-497B62E4496D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsWatcher.UnitTests", "SportsWatcher.UnitTests\SportsWatcher.UnitTests.csproj", "{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +21,17 @@ Global
 		{63B2B2A2-4CE0-49AA-85CF-F63C783B2D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63B2B2A2-4CE0-49AA-85CF-F63C783B2D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63B2B2A2-4CE0-49AA-85CF-F63C783B2D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{63B2B2A2-4CE0-49AA-85CF-F63C783B2D0D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1AD7BE43-A6D3-47DE-A633-FFAF7D5B1316} = {94B66470-5ECA-4095-8E1F-497B62E4496D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {160B9861-D5CB-4667-BABA-1ABB7181036E}

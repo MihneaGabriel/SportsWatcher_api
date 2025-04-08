@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SportsWatcher.WebApi.Entities;
 
@@ -11,9 +12,11 @@ using SportsWatcher.WebApi.Entities;
 namespace SportsWatcher.WebApi.Migrations
 {
     [DbContext(typeof(SportsWatcherDbContext))]
-    partial class SportsWatcherDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408201916_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,40 +50,6 @@ namespace SportsWatcher.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AiResponse");
-                });
-
-            modelBuilder.Entity("SportsWatcher.WebApi.Entities.Nomenclature.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries", "nom");
                 });
 
             modelBuilder.Entity("SportsWatcher.WebApi.Entities.User", b =>

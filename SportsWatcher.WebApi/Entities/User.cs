@@ -1,5 +1,5 @@
-﻿using SportsWatcher.WebApi.DTOs;
-using SportsWatcher.WebApi.Enums;
+﻿using SportsWatcher.WebApi.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SportsWatcher.WebApi.Entities
 {
@@ -9,11 +9,11 @@ namespace SportsWatcher.WebApi.Entities
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
 
-        //TODO Add Requierd
+        [Required]
+        [MaxLength(100)]
         public string PasswordHash { get; set; }
-        public string UserEmail { get; set; }   
+        public string UserEmail { get; set; }
         public UsersEnum UserType { get; set; }
-
-        //TODO Add Country/Region Nomenclature
+        public string Country { get; set; }
     }
 }

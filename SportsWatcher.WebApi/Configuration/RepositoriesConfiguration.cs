@@ -13,6 +13,7 @@ namespace SportsWatcher.WebApi.Configuration
             services.AddScoped<ICsvParserService, CsvParserService>();
             services.AddScoped<IOllamaService, OllamaService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<INomenclatureService, NomencaltureService>();
 
             services.AddHttpClient<IOllamaService, OllamaService>();
 

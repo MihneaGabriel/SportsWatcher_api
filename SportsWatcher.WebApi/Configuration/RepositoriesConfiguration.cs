@@ -1,4 +1,5 @@
-﻿using SportsWatcher.WebApi.Interfaces;
+﻿using SportsWatcher.WebApi.Data;
+using SportsWatcher.WebApi.Interfaces;
 using SportsWatcher.WebApi.Services;
 
 namespace SportsWatcher.WebApi.Configuration
@@ -7,8 +8,11 @@ namespace SportsWatcher.WebApi.Configuration
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICsvParserService, CsvParserService>();
             services.AddScoped<IOllamaService, OllamaService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddHttpClient<IOllamaService, OllamaService>();
 

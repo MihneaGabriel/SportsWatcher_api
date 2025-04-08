@@ -20,7 +20,7 @@ namespace SportsWatcher.WebApi.Services
 
         public async Task<UserDto> GetUserByIdAsync(int id)
         {
-            var userEntity = await userRepository.SingleOrDefaultAsync(x => x.UserId == id);
+            var userEntity = await userRepository.SingleOrDefaultAsync(x => x.Id == id);
             if (userEntity == null)
             {
                 throw new Exception("User not found");
@@ -30,21 +30,38 @@ namespace SportsWatcher.WebApi.Services
 
         public async Task<User> AddUserAsync(User user)
         {
+            user.CreatedBy = "Platform";
+
             await userRepository.AddAsync(user);
             await uow.SaveChangesAsync();
             return user;
         }
 
-        public async Task<User> UpadeUserAync(User user)
+        public async Task<User> UpdateUserAsync(int id, User updatedUser)
         {
-            userRepository.Update(user);
+            var existingUser = await userRepository.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (existingUser == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            existingUser.UserFirstName = updatedUser.UserFirstName;
+            existingUser.UserLastName = updatedUser.UserLastName;
+            existingUser.PasswordHash = updatedUser.PasswordHash;
+            existingUser.UserEmail = updatedUser.UserEmail;
+            existingUser.UserType = updatedUser.UserType;
+            existingUser.UpdatedAt = DateTime.UtcNow;
+            existingUser.CreatedBy = "Platform";
+
+            userRepository.Update(existingUser);
             await uow.SaveChangesAsync();
-            return user;
+            return existingUser;
         }
 
         public async Task DeleteUserAsync(int id)
         {
-            var user = await userRepository.FirstOrDefaultAsync(x => x.UserId == id);
+            var user = await userRepository.FirstOrDefaultAsync(x => x.Id == id);
             if (user != null)
             {
                 userRepository.Remove(user);

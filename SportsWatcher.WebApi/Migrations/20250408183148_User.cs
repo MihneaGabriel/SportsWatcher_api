@@ -17,7 +17,6 @@ namespace SportsWatcher.WebApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),

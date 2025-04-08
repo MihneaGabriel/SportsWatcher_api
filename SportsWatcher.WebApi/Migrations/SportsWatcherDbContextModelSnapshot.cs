@@ -79,9 +79,6 @@ namespace SportsWatcher.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserLastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

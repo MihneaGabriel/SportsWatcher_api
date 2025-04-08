@@ -12,7 +12,7 @@ using SportsWatcher.WebApi.Entities;
 namespace SportsWatcher.WebApi.Migrations
 {
     [DbContext(typeof(SportsWatcherDbContext))]
-    [Migration("20250408180308_User")]
+    [Migration("20250408183148_User")]
     partial class User
     {
         /// <inheritdoc />
@@ -81,9 +81,6 @@ namespace SportsWatcher.WebApi.Migrations
                     b.Property<string>("UserFirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserLastName")
                         .IsRequired()

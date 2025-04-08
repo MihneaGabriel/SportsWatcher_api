@@ -5,7 +5,6 @@ namespace SportsWatcher.WebApi.DTOs
 {
     public class UserDto
     {
-        public int UserId { get; set; }
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
 
@@ -20,11 +19,24 @@ namespace SportsWatcher.WebApi.DTOs
         {
             return new UserDto
             {
-                UserId = userEntity.UserId,
                 UserFirstName = userEntity.UserFirstName,
+                PasswordHash = userEntity.PasswordHash,
                 UserLastName = userEntity.UserLastName,
                 UserEmail = userEntity.UserEmail,
                 UserType = userEntity.UserType,
+            };
+        }
+
+        public static User MapUserDtoToUser(UserDto userDto)
+        {
+            return new User
+            {
+                UserName = userDto.UserFirstName + userDto.UserLastName,
+                UserFirstName = userDto.UserFirstName,
+                UserLastName = userDto.UserLastName,
+                PasswordHash = userDto.PasswordHash,
+                UserEmail = userDto.UserEmail,
+                UserType = userDto.UserType
             };
         }
     }

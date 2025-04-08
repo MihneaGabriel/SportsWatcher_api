@@ -9,11 +9,11 @@ namespace SportsWatcher.WebApi.Controllers
     [Route("api/[controller]")]
     public class UsersController(IUserService userService) : ControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
         {
             var users = await userService.GetAllUsersAsync();
-            if( users == null )
+            if (users == null)
             {
                 return NotFound(new { message = "No users found." });
             }
@@ -21,8 +21,8 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser(int id)
+        [HttpGet("GetUser/{id}")]
+        public async Task<IActionResult> GetUser(int id)
         {
             var user = await userService.GetUserByIdAsync(id);
             if (user == null)
@@ -33,15 +33,15 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<UserDto>> CreateUser([FromBody] User user)
+        [HttpPost("CreateUser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
         {
-            if (user == null)
+            if (userDto == null)
             {
                 return BadRequest(new { message = "Invalid user data." });
             }
 
-            var createdUser = await userService.AddUserAsync(user);
+            var createdUser = await userService.AddUserAsync(UserDto.MapUserDtoToUser(userDto));
             if (createdUser == null)
             {
                 return BadRequest(new { message = "Failed to create user." });
@@ -50,10 +50,10 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(createdUser);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        [HttpPut("UpdateUser/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
         {
-            if (user == null || user.UserId != id)
+            if (userDto == null)
             {
                 return BadRequest(new { message = "Invalid user data." });
             }
@@ -64,7 +64,7 @@ namespace SportsWatcher.WebApi.Controllers
                 return NotFound(new { message = $"User with ID {id} not found." });
             }
 
-            var updatedUser = await userService.UpadeUserAync(user);
+            var updatedUser = await userService.UpdateUserAsync(id, UserDto.MapUserDtoToUser(userDto));
             if (updatedUser == null)
             {
                 return BadRequest(new { message = "Failed to update user." });
@@ -73,7 +73,7 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(updatedUser);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteUser/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var existingUser = await userService.GetUserByIdAsync(id);
@@ -83,11 +83,6 @@ namespace SportsWatcher.WebApi.Controllers
             }
 
             await userService.DeleteUserAsync(id);
-            if (existingUser == null)
-            {
-                return BadRequest(new { message = "Failed to delete user." });
-            }
-
             return NoContent();
         }
     }

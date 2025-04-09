@@ -1,4 +1,6 @@
-﻿using SportsWatcher.WebApi.DTOs;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
 
@@ -9,6 +11,7 @@ namespace SportsWatcher.WebApi.Services
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             var userEntities = await userRepository.GetAllAsync();
+
             var userEntitiesDtos = new List<UserDto>();
             foreach (var u in userEntities)
             {
@@ -37,9 +40,9 @@ namespace SportsWatcher.WebApi.Services
             return user;
         }
 
-        public async Task<User> UpdateUserAsync(int id, User updatedUser)
+        public async Task<User> UpdateUserAsync(User updatedUser)
         {
-            var existingUser = await userRepository.SingleOrDefaultAsync(x => x.Id == id);
+            var existingUser = await userRepository.SingleOrDefaultAsync(x => x.Id == updatedUser.Id);
 
             if (existingUser == null)
             {
@@ -49,6 +52,7 @@ namespace SportsWatcher.WebApi.Services
             existingUser.UserFirstName = updatedUser.UserFirstName;
             existingUser.UserLastName = updatedUser.UserLastName;
             existingUser.PasswordHash = updatedUser.PasswordHash;
+            existingUser.Country = updatedUser.Country;
             existingUser.UserEmail = updatedUser.UserEmail;
             existingUser.UserType = updatedUser.UserType;
             existingUser.UpdatedAt = DateTime.UtcNow;
@@ -66,10 +70,6 @@ namespace SportsWatcher.WebApi.Services
             {
                 userRepository.Remove(user);
                 await uow.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("User not found");
             }
         }
     }

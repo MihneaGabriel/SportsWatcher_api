@@ -4,6 +4,6 @@ namespace SportsWatcher.WebApi.Interfaces
 {
     public interface INomenclatureService
     {
-        Task<IEnumerable<Country>> GetAllTaraAsync();
+        Task<IEnumerable<Country>> GetAllCountriesAsync();
     }
 }

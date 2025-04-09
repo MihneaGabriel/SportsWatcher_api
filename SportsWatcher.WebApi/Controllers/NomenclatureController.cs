@@ -11,7 +11,7 @@ namespace SportsWatcher.WebApi.Controllers
         [HttpGet("GetAllCountries")]
         public async Task<IActionResult> GetAllCountries()
         {
-            var countries = await nomenclatureService.GetAllTaraAsync();
+            var countries = await nomenclatureService.GetAllCountriesAsync();
             if (countries == null)
             {
                 return NotFound(new { message = "No countries found." });

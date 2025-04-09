@@ -13,7 +13,7 @@ namespace SportsWatcher.WebApi.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await userService.GetAllUsersAsync();
-            if (users == null)
+            if (users == null || users.Count() == 0)
             {
                 return NotFound(new { message = "No users found." });
             }
@@ -24,13 +24,13 @@ namespace SportsWatcher.WebApi.Controllers
         [HttpGet("GetUser/{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await userService.GetUserByIdAsync(id);
-            if (user == null)
+            var userDto = await userService.GetUserByIdAsync(id);
+            if (userDto == null)
             {
                 return NotFound(new { message = $"User with ID {id} not found." });
             }
 
-            return Ok(user);
+            return Ok(userDto);
         }
 
         [HttpPost("CreateUser")]
@@ -50,21 +50,15 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(createdUser);
         }
 
-        [HttpPut("UpdateUser/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDto userDto)
         {
             if (userDto == null)
             {
                 return BadRequest(new { message = "Invalid user data." });
             }
 
-            var existingUser = await userService.GetUserByIdAsync(id);
-            if (existingUser == null)
-            {
-                return NotFound(new { message = $"User with ID {id} not found." });
-            }
-
-            var updatedUser = await userService.UpdateUserAsync(id, UserDto.MapUserDtoToUser(userDto));
+            var updatedUser = await userService.UpdateUserAsync(UserDto.MapUserDtoToUser(userDto));
             if (updatedUser == null)
             {
                 return BadRequest(new { message = "Failed to update user." });
@@ -76,13 +70,8 @@ namespace SportsWatcher.WebApi.Controllers
         [HttpDelete("DeleteUser/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var existingUser = await userService.GetUserByIdAsync(id);
-            if (existingUser == null)
-            {
-                return NotFound(new { message = $"User with ID {id} not found." });
-            }
-
             await userService.DeleteUserAsync(id);
+
             return NoContent();
         }
     }

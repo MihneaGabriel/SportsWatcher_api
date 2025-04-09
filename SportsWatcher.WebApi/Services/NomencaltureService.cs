@@ -3,12 +3,12 @@ using SportsWatcher.WebApi.Interfaces;
 
 namespace SportsWatcher.WebApi.Services
 {
-    public class NomencaltureService(IGenericRepository<Country> taraRepository, IUnitOfWork uow ) : INomenclatureService
+    public class NomencaltureService(IGenericRepository<Country> countryRepository) : INomenclatureService
     {
         public async Task<IEnumerable<Country>> GetAllCountriesAsync()
         {
-            var taraEntities = await taraRepository.GetAllAsync();
-            return taraEntities;
+            var countryEntities = await countryRepository.GetAllAsync();
+            return countryEntities;
         }
     }
 }

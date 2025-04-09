@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Entities;
@@ -15,6 +16,7 @@ namespace SportsWatcher.WebApi.Services
             var userEntitiesDtos = new List<UserDto>();
             foreach (var u in userEntities)
             {
+
                 userEntitiesDtos.Add(UserDto.MapUserToUserDto(u));
             }
 
@@ -34,6 +36,10 @@ namespace SportsWatcher.WebApi.Services
         public async Task<User> AddUserAsync(User user)
         {
             user.CreatedBy = "Platform";
+
+            // Crypt the password
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
 
             await userRepository.AddAsync(user);
             await uow.SaveChangesAsync();

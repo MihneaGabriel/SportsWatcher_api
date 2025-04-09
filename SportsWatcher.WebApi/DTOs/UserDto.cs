@@ -6,16 +6,12 @@ namespace SportsWatcher.WebApi.DTOs
     public class UserDto
     {
         public int UserId { get; set; }
-        public string UserFirstName { get; set; }
-        public string UserLastName { get; set; }
-
-        //TODO Add Requierd
-        public string PasswordHash { get; set; }
-        public string UserEmail { get; set; }
+        public required string UserFirstName { get; set; }
+        public required string UserLastName { get; set; }
+        public required string PasswordHash { get; set; }
+        public required string UserEmail { get; set; }
         public UsersEnum UserType { get; set; }
-        public string Country {  get; set; }
-
-        //TODO Add Country/Region Nomenclature
+        public required string Country {  get; set; }
 
         public static UserDto MapUserToUserDto(User userEntity)
         {

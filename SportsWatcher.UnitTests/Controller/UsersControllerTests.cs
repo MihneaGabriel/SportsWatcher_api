@@ -25,8 +25,8 @@ namespace SportsWatcher.UnitTests.Controller
             // Arrange
             var users = new List<UserDto>
                 {
-                    new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com" },
-                    new UserDto { UserFirstName = "Jane", UserLastName = "Smith", PasswordHash = "87654321", UserEmail = "jane.smith@example.com" }
+                    new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com", Country = "Romania" },
+                    new UserDto { UserFirstName = "Jane", UserLastName = "Smith", PasswordHash = "87654321", UserEmail = "jane.smith@example.com", Country = "Romania" }
                 };
 
             _mockUserService
@@ -89,7 +89,7 @@ namespace SportsWatcher.UnitTests.Controller
         {
             // Arrange
             var userDto = new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com", Country = "Romania" };
-            var user = new User { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "87654331", UserEmail = "john.doe@example.com", Country = "Romania" };
+            var user = new User { UserFirstName = "John", UserLastName = "Doe", UserName = "johnDoe",  PasswordHash = "87654331", UserEmail = "john.doe@example.com", Country = "Romania" };
             _mockUserService.Setup(service => service.AddUserAsync(It.IsAny<User>())).ReturnsAsync(user);
 
             // Act
@@ -123,6 +123,7 @@ namespace SportsWatcher.UnitTests.Controller
                 Id = 1,
                 UserFirstName = "John",
                 UserLastName = "Doe",
+                UserName = "johnDoe",
                 PasswordHash = "12345678",
                 UserEmail = "john.doe@example.com",
                 Country = "Romania"

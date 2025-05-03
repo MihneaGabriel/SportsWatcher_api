@@ -6,22 +6,23 @@ namespace SportsWatcher.WebApi.DTOs
     public class UserDto
     {
         public int UserId { get; set; }
-        public string UserFirstName { get; set; }
-        public string UserLastName { get; set; }
-        public string PasswordHash { get; set; }
-        public string UserEmail { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
         public UsersEnum UserType { get; set; }
         public string Country { get; set; }
+        public Boolean TermsAgreement { get; set; } = false;
+        public Boolean AgeConfirmation { get; set; } = false;
+        public Boolean Promotions { get; set; } = false; // TODO 
 
         public static UserDto MapUserToUserDto(User userEntity)
         {
             return new UserDto
             {
                 UserId = userEntity.Id,
-                UserFirstName = userEntity.UserFirstName,
-                PasswordHash = userEntity.PasswordHash,
-                UserLastName = userEntity.UserLastName,
-                UserEmail = userEntity.UserEmail,
+                UserName = userEntity.UserName,
+                Password = userEntity.PasswordHash,
+                Email = userEntity.UserEmail,
                 Country = userEntity.Country,
                 UserType = userEntity.UserType,
             };
@@ -29,14 +30,16 @@ namespace SportsWatcher.WebApi.DTOs
 
         public static User MapUserDtoToUser(UserDto userDto)
         {
+            var nameParts = string.IsNullOrWhiteSpace(userDto.UserName) ? [] : userDto.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
             return new User
             {
                 Id = userDto.UserId,
-                UserName = userDto.UserFirstName + userDto.UserLastName,
-                UserFirstName = userDto.UserFirstName,
-                UserLastName = userDto.UserLastName,
-                PasswordHash = userDto.PasswordHash,
-                UserEmail = userDto.UserEmail,
+                UserName = userDto.UserName,
+                UserFirstName = nameParts.Length > 0 ? nameParts[0] : string.Empty,
+                UserLastName = nameParts.Length > 1 ? string.Join(" ", nameParts.Skip(1)) : string.Empty,
+                PasswordHash = userDto.Password,
+                UserEmail = userDto.Email,
                 Country = userDto.Country,
                 UserType = userDto.UserType
             };

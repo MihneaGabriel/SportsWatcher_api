@@ -41,6 +41,16 @@ namespace SportsWatcher.WebApi.Controllers
                 return BadRequest(new { message = "Invalid user data." });
             }
 
+            if( userDto.AgeConfirmation == false)
+            {
+                return BadRequest(new { message = "User must confirm their age." });
+            }
+
+            if (userDto.TermsAgreement == false)
+            {
+                return BadRequest(new { message = "User must agree to the terms." });
+            }
+
             var createdUser = await userService.AddUserAsync(UserDto.MapUserDtoToUser(userDto));
             if (createdUser == null)
             {

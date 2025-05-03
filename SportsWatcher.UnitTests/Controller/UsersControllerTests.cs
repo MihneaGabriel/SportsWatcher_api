@@ -25,8 +25,8 @@ namespace SportsWatcher.UnitTests.Controller
             // Arrange
             var users = new List<UserDto>
                 {
-                    new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com", Country = "Romania" },
-                    new UserDto { UserFirstName = "Jane", UserLastName = "Smith", PasswordHash = "87654321", UserEmail = "jane.smith@example.com", Country = "Romania" }
+                    new UserDto { UserName = "John Doe", Password = "12345678", Email = "john.doe@example.com", Country = "Romania" },
+                    new UserDto { UserName = "Jane Doe", Password = "87654321", Email = "jane.smith@example.com", Country = "Romania" }
                 };
 
             _mockUserService
@@ -59,7 +59,7 @@ namespace SportsWatcher.UnitTests.Controller
         public async Task GetUser_ShouldReturnOkResult_WithUser()
         {
             // Arrange
-            var user = new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com", Country = "Romania" };
+            var user = new UserDto { UserName = "Jane Doe", Password = "12345678", Email = "john.doe@example.com", Country = "Romania" };
             _mockUserService.Setup(service => service.GetUserByIdAsync(1)).ReturnsAsync(user);
 
             // Act
@@ -68,7 +68,7 @@ namespace SportsWatcher.UnitTests.Controller
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var returnedUser = Assert.IsType<UserDto>(okResult.Value);
-            Assert.Equal("John", returnedUser.UserFirstName);
+            Assert.Equal("Jane Doe", returnedUser.UserName);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace SportsWatcher.UnitTests.Controller
         public async Task CreateUser_ShouldReturnOkObjectResult_WithCreatedUser()
         {
             // Arrange
-            var userDto = new UserDto { UserFirstName = "John", UserLastName = "Doe", PasswordHash = "12345678", UserEmail = "john.doe@example.com", Country = "Romania" };
+            var userDto = new UserDto { UserName = "John Doe", Password = "12345678", Email = "john.doe@example.com", Country = "Romania", AgeConfirmation = true, TermsAgreement = true };
             var user = new User { UserFirstName = "John", UserLastName = "Doe", UserName = "johnDoe",  PasswordHash = "87654331", UserEmail = "john.doe@example.com", Country = "Romania" };
             _mockUserService.Setup(service => service.AddUserAsync(It.IsAny<User>())).ReturnsAsync(user);
 

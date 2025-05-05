@@ -23,13 +23,23 @@ namespace SportsWatcher.WebApi.Services
             return userEntitiesDtos;
         }
 
-        public async Task<UserDto> GetUserByIdAsync(int id)
+        public async Task<UserDto> GetUserAsync(LoginDto login)
         {
-            var userEntity = await userRepository.SingleOrDefaultAsync(x => x.Id == id);
+            var userEntity = await userRepository.SingleOrDefaultAsync(x => x.UserEmail == login.Email);
+
             if (userEntity == null)
             {
-                throw new Exception("User not found");
+                return null;
             }
+
+            var hasher = new PasswordHasher<User>();
+            var verificationResult = hasher.VerifyHashedPassword(userEntity, userEntity.PasswordHash, login.Password);
+
+            if (verificationResult != PasswordVerificationResult.Success)
+            {
+                return null;
+            }
+
             return UserDto.MapUserToUserDto(userEntity);
         }
 

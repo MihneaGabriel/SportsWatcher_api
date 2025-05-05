@@ -60,10 +60,11 @@ namespace SportsWatcher.UnitTests.Controller
         {
             // Arrange
             var user = new UserDto { UserName = "Jane Doe", Password = "12345678", Email = "john.doe@example.com", Country = "Romania" };
-            _mockUserService.Setup(service => service.GetUserByIdAsync(1)).ReturnsAsync(user);
+            var mocklogin = new LoginDto { Email = "john.doe@example.com", Password = "123456789" };
+            _mockUserService.Setup(service => service.GetUserAsync(mocklogin)).ReturnsAsync(user);
 
             // Act
-            var result = await _controller.GetUser(1);
+            var result = await _controller.GetUser(mocklogin);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -75,10 +76,11 @@ namespace SportsWatcher.UnitTests.Controller
         public async Task GetUser_ShouldReturnNotFoundObjectResult_WhenUserDoesNotExist()
         {
             // Arrange
-            _mockUserService.Setup(service => service.GetUserByIdAsync(1)).ReturnsAsync((UserDto)null);
+            var mocklogin = new LoginDto { Email = "john.doe@example.com", Password = "123456789" };
+            _mockUserService.Setup(service => service.GetUserAsync(mocklogin)).ReturnsAsync((UserDto)null);
 
             // Act
-            var result = await _controller.GetUser(1);
+            var result = await _controller.GetUser(mocklogin);
 
             // Assert
             Assert.IsType<NotFoundObjectResult>(result);

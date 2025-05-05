@@ -21,13 +21,13 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(users);
         }
 
-        [HttpGet("GetUser/{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        [HttpPost("GetUser")]
+        public async Task<IActionResult> GetUser([FromBody] LoginDto login)
         {
-            var userDto = await userService.GetUserByIdAsync(id);
+            var userDto = await userService.GetUserAsync(login);
             if (userDto == null)
             {
-                return NotFound(new { message = $"User with ID {id} not found." });
+                return NotFound(new { message = "Email or password is incorrect." });
             }
 
             return Ok(userDto);

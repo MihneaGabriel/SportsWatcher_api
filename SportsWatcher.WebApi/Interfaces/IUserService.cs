@@ -8,6 +8,7 @@ namespace SportsWatcher.WebApi.Interfaces
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
         Task<UserDto> GetUserAsync(LoginDto login);
         Task<User> AddUserAsync(User user);
+        Task<string> ResetPasswordAsync(EmailRequestDTO user);
         Task<User> UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
     }

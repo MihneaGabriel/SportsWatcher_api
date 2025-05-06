@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
 using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
+using SportsWatcher.WebApi.Utils;
 
 namespace SportsWatcher.WebApi.Services
 {
@@ -54,6 +53,25 @@ namespace SportsWatcher.WebApi.Services
             await userRepository.AddAsync(user);
             await uow.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<string> ResetPasswordAsync(EmailRequestDTO user)
+        {
+            var updatedUser = await userRepository.FirstOrDefaultAsync(u => u.UserEmail == user.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            var newPassword = GeneratePasswordUtils.GenerateRandomPassword(10); // We mocked the length to max 10
+
+            var hasher = new PasswordHasher<User>();
+            updatedUser.PasswordHash = hasher.HashPassword(updatedUser, newPassword);
+
+            userRepository.Update(updatedUser);
+            await uow.SaveChangesAsync();
+
+            return newPassword;
         }
 
         public async Task<User> UpdateUserAsync(User updatedUser)

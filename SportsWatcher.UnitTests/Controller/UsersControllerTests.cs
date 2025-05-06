@@ -193,7 +193,50 @@ namespace SportsWatcher.UnitTests.Controller
             Assert.IsType<NoContentResult>(result);
 
         }
+        #endregion
 
+        #region Password Tests
+        [Fact]
+        public async Task ResetPassword_ShouldReturnNotFoundResult_WhenEmailDoesNotExist()
+        {
+            // Arrange
+            var emailRequest = new EmailRequestDTO { Email = "nonexistent@example.com" };
+            _mockUserService
+                .Setup(service => service.ResetPasswordAsync(emailRequest))
+                .ReturnsAsync((string)null);
+
+            // Act
+            var result = await _controller.ResetPassword(emailRequest);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task ResetPassword_ShouldReturnOkResult_WithTempPassword()
+        {
+            // Arrange
+            var emailRequest = new EmailRequestDTO { Email = "john.doe@example.com" };
+            var generatedPassword = "Temp12345!";
+
+            _mockUserService
+                .Setup(service => service.ResetPasswordAsync(emailRequest))
+                .ReturnsAsync(generatedPassword);
+
+            // Act
+            var result = await _controller.ResetPassword(emailRequest);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+
+            var resultDict = okResult.Value
+                .GetType()
+                .GetProperties()
+                .ToDictionary(p => p.Name, p => p.GetValue(okResult.Value));
+
+            Assert.True(resultDict.ContainsKey("tempPassword"));
+            Assert.Equal(generatedPassword, resultDict["tempPassword"]);
+        }
         #endregion
     }
 }

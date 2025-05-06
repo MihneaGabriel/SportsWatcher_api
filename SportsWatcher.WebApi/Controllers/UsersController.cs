@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
-using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
 
 namespace SportsWatcher.WebApi.Controllers
@@ -58,6 +57,23 @@ namespace SportsWatcher.WebApi.Controllers
             }
 
             return Ok(createdUser);
+        }
+
+        [HttpPut("ResetUserPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] EmailRequestDTO user)
+        {
+            if(string.IsNullOrEmpty(user.Email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var generatedPassword = await userService.ResetPasswordAsync(user);
+            if (generatedPassword == null)
+            {
+                return BadRequest(new { message = "Failed to update user." });
+            }
+
+            return Ok(new { tempPassword = generatedPassword });
         }
 
         [HttpPut("UpdateUser")]

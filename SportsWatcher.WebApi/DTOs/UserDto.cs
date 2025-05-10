@@ -6,7 +6,7 @@ namespace SportsWatcher.WebApi.DTOs
     public class UserDto
     {
         public int UserId { get; set; }
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
         public UsersEnum UserType { get; set; }
@@ -20,7 +20,7 @@ namespace SportsWatcher.WebApi.DTOs
             return new UserDto
             {
                 UserId = userEntity.Id,
-                UserName = userEntity.UserName,
+                Username = userEntity.Username,
                 Password = userEntity.PasswordHash,
                 Email = userEntity.UserEmail,
                 Country = userEntity.Country,
@@ -30,12 +30,12 @@ namespace SportsWatcher.WebApi.DTOs
 
         public static User MapUserDtoToUser(UserDto userDto)
         {
-            var nameParts = string.IsNullOrWhiteSpace(userDto.UserName) ? [] : userDto.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var nameParts = string.IsNullOrWhiteSpace(userDto.Username) ? [] : userDto.Username.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             return new User
             {
                 Id = userDto.UserId,
-                UserName = userDto.UserName,
+                Username = userDto.Username,
                 UserFirstName = nameParts.Length > 0 ? nameParts[0] : string.Empty,
                 UserLastName = nameParts.Length > 1 ? string.Join(" ", nameParts.Skip(1)) : string.Empty,
                 PasswordHash = userDto.Password,

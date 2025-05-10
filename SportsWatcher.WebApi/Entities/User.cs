@@ -5,7 +5,7 @@ namespace SportsWatcher.WebApi.Entities
 {
     public class User : BaseEntity
     {
-        public required string UserName { get; set; }
+        public required string Username { get; set; }
         public required string UserFirstName { get; set; }
         public required string UserLastName { get; set; }
 

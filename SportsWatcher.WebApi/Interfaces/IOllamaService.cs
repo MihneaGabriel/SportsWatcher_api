@@ -5,6 +5,6 @@ namespace SportsWatcher.WebApi.Interfaces
     public interface IOllamaService
     {
         Task<string> InterpretJson(string jsonData);
-        Task<IActionResult> CreateAiResponse(string jsonResponse);
+        Task<IActionResult> CreateAiResponse(string jsonResponse, int userId );
     }
 }

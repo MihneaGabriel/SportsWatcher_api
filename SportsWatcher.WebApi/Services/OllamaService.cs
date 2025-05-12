@@ -50,13 +50,15 @@ namespace SportsWatcher.WebApi.Services
             }
         }
 
-        public async Task<IActionResult> CreateAiResponse(string jsonResponse)
+        public async Task<IActionResult> CreateAiResponse(string jsonResponse, int userId)
         {
+
             var aiResponse = new AiResponse
             {
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "Ollama",
-                JsonResponse = jsonResponse
+                JsonResponse = jsonResponse,
+                UserId = userId
             };
             try
             {

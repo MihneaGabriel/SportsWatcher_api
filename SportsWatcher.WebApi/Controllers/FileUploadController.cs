@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
-using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
+using System.Text.Json;
 
 namespace SportsWatcher.WebApi.Controllers
 {
@@ -26,7 +26,7 @@ namespace SportsWatcher.WebApi.Controllers
                 return BadRequest(new { message = "Invalid file. Please upload a non-empty CSV file." });
             }
 
-            if (aiResponse.UserId <= 0) 
+            if (aiResponse.UserId <= 0)
             {
                 return BadRequest(new { message = "The user doesn't exist" });
             }
@@ -41,12 +41,12 @@ namespace SportsWatcher.WebApi.Controllers
             string jsonData = _csvParserService.ParseCsvToJson(stream);
 
             // Send the JSON data to the Ollama service for interpretation
-            string ollamaResponse = await _ollamaService.InterpretJson(jsonData);
+            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData);
 
             // Save the parsed data to the database
-            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse.UserId );
+            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse.UserId);
 
-            return Ok(new AiResponse { JsonResponse = ollamaResponse });
+            return Ok(ollamaResponse);
         }
     }
 }

@@ -17,17 +17,21 @@ namespace SportsWatcher.WebApi.Services
             _sportsWatcherDbcontext = sportsWatcherDbcontext;
         }
 
-        public async Task<string> InterpretJson(string jsonData)
+        public async Task<JsonDocument> InterpretJson(string jsonData)
         {
             var requestBody = new
             {
-                prompt = $"Interpret this JSON data: {jsonData}.Calculate the average distance traveled per day. Find the total number of steps taken per day. Analyze the distribution of activity levels throughout the day. Identify the periods of high and low activity. Identify the activities that contributed the most to the total distance traveled. .For each task return just the value.",
+                prompt = $"Interpret this JSON data: {jsonData}. Calculate the average distance traveled per day. Find the total number of steps taken per day. Analyze the distribution of activity levels throughout the day. Identify the periods of high and low activity. Identify the activities that contributed the most to the total distance traveled. For each task return just the value.",
                 model = "gemma:2b",
                 stream = false,
                 format = "json"
             };
 
-            var content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+            var content = new StringContent(
+                JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+                "application/json"
+            );
 
             HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:11434/api/generate", content);
 
@@ -40,24 +44,30 @@ namespace SportsWatcher.WebApi.Services
 
             try
             {
-                using JsonDocument doc = JsonDocument.Parse(responseString);
-                string? extractedResponse = doc.RootElement.GetProperty("response").GetString();
-                return extractedResponse?.Trim() ?? string.Empty;
+                using JsonDocument fullResponse = JsonDocument.Parse(responseString);
+
+                // Ollama wraps the real response as a string in the `response` property
+                string rawJson = fullResponse.RootElement.GetProperty("response").GetString();
+
+                if (string.IsNullOrWhiteSpace(rawJson))
+                    throw new Exception("Empty response received from Ollama.");
+
+                return JsonDocument.Parse(rawJson);
             }
-            catch (JsonException e)
+            catch (JsonException ex)
             {
-                throw new Exception("Error parsing JSON response.", e);
+                throw new Exception("Failed to parse JSON from Ollama response.", ex);
             }
         }
 
-        public async Task<IActionResult> CreateAiResponse(string jsonResponse, int userId)
+        public async Task<AiResponse> CreateAiResponse(JsonDocument jsonResponse, int userId)
         {
 
             var aiResponse = new AiResponse
             {
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "Ollama",
-                JsonResponse = jsonResponse,
+                JsonResponse = jsonResponse.RootElement.GetRawText(), 
                 UserId = userId
             };
             try
@@ -70,7 +80,7 @@ namespace SportsWatcher.WebApi.Services
                 Console.WriteLine($"Error saving AI response to database: {e.Message}");
             }
 
-            return new OkObjectResult(aiResponse);
+            return aiResponse;
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace SportsWatcher.WebApi.Entities
+﻿using System.Text.Json;
+
+namespace SportsWatcher.WebApi.Entities
 {
     public class AiResponse : BaseEntity
     {
-        public string JsonResponse { get; set; }
+        public string JsonResponse { get; set; } = string.Empty;
 
         public int UserId { get; set; }
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SportsWatcher.WebApi.Controllers;
+using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Interfaces;
 
 namespace SportsWatcher.WebApi.UnitTests.Controllers
@@ -35,8 +36,14 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             _mockFormFile.Setup(f => f.FileName).Returns(fileName);
             _mockFormFile.Setup(f => f.Length).Returns(ms.Length);
 
+            var aiResponse = new AiResponseDto
+            {
+                File = _mockFormFile.Object,
+                UserId = 1 
+            };
+
             // Act
-            var result = await _controller.UploadCsv(_mockFormFile.Object);
+            var result = await _controller.UploadCsv(aiResponse);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -48,8 +55,14 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             // Arrange
             _mockFormFile.Setup(f => f.Length).Returns(0);
 
+            var aiResponse = new AiResponseDto
+            {
+                File = _mockFormFile.Object,
+                UserId = 1
+            };
+
             // Act
-            var result = await _controller.UploadCsv(_mockFormFile.Object);
+            var result = await _controller.UploadCsv(aiResponse);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);

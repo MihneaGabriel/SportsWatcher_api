@@ -39,7 +39,8 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             var aiResponse = new AiResponseDto
             {
                 File = _mockFormFile.Object,
-                UserId = 1 
+                UserId = 1,
+                CategoryId = 1,
             };
 
             // Act
@@ -58,7 +59,9 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             var aiResponse = new AiResponseDto
             {
                 File = _mockFormFile.Object,
-                UserId = 1
+                UserId = 1,
+                CategoryId = 1,
+                
             };
 
             // Act

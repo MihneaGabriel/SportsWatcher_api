@@ -7,5 +7,7 @@ namespace SportsWatcher.WebApi.Entities
         public string JsonResponse { get; set; } = string.Empty;
 
         public int UserId { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

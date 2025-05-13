@@ -17,6 +17,7 @@ namespace SportsWatcher.UnitTests.Controller
             _controller = new NomenclatureController(_mockNomenclatureService.Object);
         }
 
+        #region Countires TESTS
         [Fact]
         public async Task GetAllCountries_ReturnsOkResult_WithListOfCountries()
         {
@@ -56,6 +57,51 @@ namespace SportsWatcher.UnitTests.Controller
             var returnValue = Assert.IsAssignableFrom<IEnumerable<Country>>(okResult.Value);
             Assert.Empty(returnValue);
         }
+        #endregion
+
+
+        #region Categories TESTS
+        [Fact]
+        public async Task GetAllCategories_ReturnsOkResult_WithListOfCategories()
+        {
+            // Arrange
+            var categories = new List<Category>
+            {
+                new Category { Id = 1, Key = "football", Value = "Football", isActive = true },
+                new Category { Id = 2, Key = "basketball", Value = "Basketball", isActive = true }
+            };
+
+            _mockNomenclatureService
+                .Setup(service => service.GetAllCategoriesAsync())
+                .ReturnsAsync(categories);
+
+            // Act
+            var result = await _controller.GetAllCategories();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsAssignableFrom<IEnumerable<Category>>(okResult.Value);
+            Assert.Equal(2, returnValue.Count());
+        }
+
+        [Fact]
+        public async Task GetAllCategories_ReturnsEmptyList_WhenNoCategoriesExist()
+        {
+            // Arrange
+            _mockNomenclatureService
+                .Setup(service => service.GetAllCategoriesAsync())
+                .ReturnsAsync(new List<Category>());
+
+            // Act
+            var result = await _controller.GetAllCategories();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsAssignableFrom<IEnumerable<Category>>(okResult.Value);
+            Assert.Empty(returnValue);
+        }
+        #endregion
+
     }
 
 }

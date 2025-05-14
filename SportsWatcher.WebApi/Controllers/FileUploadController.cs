@@ -18,7 +18,7 @@ namespace SportsWatcher.WebApi.Controllers
             _ollamaService = ollamaService;
         }
 
-        [HttpPost("upload")]
+        [HttpPost("Upload")]
         public async Task<IActionResult> UploadCsv([FromForm] AiResponseDto aiResponse)
         {
             if (aiResponse.File == null || aiResponse.File.Length == 0)
@@ -31,6 +31,11 @@ namespace SportsWatcher.WebApi.Controllers
                 return BadRequest(new { message = "The user doesn't exist" });
             }
 
+            if (aiResponse.CategoryId <= 0)
+            {
+                return BadRequest(new { message = "This category do not exist" });
+            }
+
             using var stream = new MemoryStream();
 
             await aiResponse.File.CopyToAsync(stream);
@@ -41,10 +46,10 @@ namespace SportsWatcher.WebApi.Controllers
             string jsonData = _csvParserService.ParseCsvToJson(stream);
 
             // Send the JSON data to the Ollama service for interpretation
-            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData);
+            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData, aiResponse.CategoryId);
 
             // Save the parsed data to the database
-            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse.UserId);
+            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse);
 
             return Ok(ollamaResponse);
         }

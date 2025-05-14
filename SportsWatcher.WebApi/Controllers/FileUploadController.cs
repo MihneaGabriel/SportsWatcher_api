@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
-using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
+using System.Text.Json;
 
 namespace SportsWatcher.WebApi.Controllers
 {
@@ -18,7 +18,7 @@ namespace SportsWatcher.WebApi.Controllers
             _ollamaService = ollamaService;
         }
 
-        [HttpPost("upload")]
+        [HttpPost("Upload")]
         public async Task<IActionResult> UploadCsv([FromForm] AiResponseDto aiResponse)
         {
             if (aiResponse.File == null || aiResponse.File.Length == 0)
@@ -26,9 +26,14 @@ namespace SportsWatcher.WebApi.Controllers
                 return BadRequest(new { message = "Invalid file. Please upload a non-empty CSV file." });
             }
 
-            if (aiResponse.UserId <= 0) 
+            if (aiResponse.UserId <= 0)
             {
                 return BadRequest(new { message = "The user doesn't exist" });
+            }
+
+            if (aiResponse.CategoryId <= 0)
+            {
+                return BadRequest(new { message = "This category do not exist" });
             }
 
             using var stream = new MemoryStream();
@@ -41,12 +46,12 @@ namespace SportsWatcher.WebApi.Controllers
             string jsonData = _csvParserService.ParseCsvToJson(stream);
 
             // Send the JSON data to the Ollama service for interpretation
-            string ollamaResponse = await _ollamaService.InterpretJson(jsonData);
+            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData, aiResponse.CategoryId);
 
             // Save the parsed data to the database
-            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse.UserId );
+            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse);
 
-            return Ok(new AiResponse { JsonResponse = ollamaResponse });
+            return Ok(ollamaResponse);
         }
     }
 }

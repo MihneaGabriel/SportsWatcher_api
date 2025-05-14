@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SportsWatcher.WebApi.Entities.Nomenclature;
 
 namespace SportsWatcher.WebApi.Entities
@@ -8,5 +9,6 @@ namespace SportsWatcher.WebApi.Entities
         public DbSet<AiResponse> AiResponse { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

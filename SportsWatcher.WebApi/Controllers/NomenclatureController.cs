@@ -19,5 +19,18 @@ namespace SportsWatcher.WebApi.Controllers
             return Ok(countries);
         }
         #endregion
+
+        #region Categories
+        [HttpGet("GetAllCategories")]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var category = await nomenclatureService.GetAllCategoriesAsync();
+            if (category == null)
+            {
+                return NotFound(new { message = "No category found." });
+            }
+            return Ok(category);
+        }
+        #endregion
     }
 }

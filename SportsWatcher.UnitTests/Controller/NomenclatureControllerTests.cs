@@ -101,7 +101,6 @@ namespace SportsWatcher.UnitTests.Controller
             Assert.Empty(returnValue);
         }
         #endregion
-
     }
 
 }

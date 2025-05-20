@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SportsWatcher.WebApi.Controllers;
 using SportsWatcher.WebApi.DTOs;
+using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
 
 namespace SportsWatcher.WebApi.UnitTests.Controllers
@@ -70,5 +71,47 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
+        [Fact]
+
+        public async Task GetAiResponse_ValidRequest_ReturnsOkResult()
+        {
+            // Arrange
+            var mockCsvParserService = new Mock<ICsvParserService>();
+            var mockOllamaService = new Mock<IOllamaService>();
+            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
+            int userId = 1;
+            int categoryId = 2;
+            var aiResponses = new List<AiResponse>();
+            mockOllamaService.Setup(s => s.GetAiResponsesAsync(userId, categoryId))
+                .ReturnsAsync(aiResponses);
+
+            // Act
+            var result = await controller.GetAiResponse(userId, categoryId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(aiResponses, okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetAiResponse_ServiceReturnsNull_ReturnsNotFound()
+        {
+            // Arrange
+            var mockCsvParserService = new Mock<ICsvParserService>();
+            var mockOllamaService = new Mock<IOllamaService>();
+            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
+            int userId = 1;
+            int categoryId = 2;
+            mockOllamaService.Setup(s => s.GetAiResponsesAsync(userId, categoryId))
+                .ReturnsAsync((List<AiResponse>?)null);
+
+            // Act
+            var result = await controller.GetAiResponse(userId, categoryId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+
     }
 }

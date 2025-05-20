@@ -1,4 +1,5 @@
-﻿using SportsWatcher.WebApi.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Entities;
 using SportsWatcher.WebApi.Interfaces;
 using System.Text;
@@ -15,6 +16,21 @@ namespace SportsWatcher.WebApi.Services
         {
             _httpClient = httpClient;
             _sportsWatcherDbcontext = sportsWatcherDbcontext;
+        }
+
+        public async Task<List<AiResponse>> GetAiResponsesAsync(int userId, int categoryId)
+        {
+            var aiResponses = await _sportsWatcherDbcontext.AiResponse
+                .Where(r => r.UserId == userId && r.CategoryId == categoryId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            if(aiResponses == null || aiResponses.Count == 0)
+            {
+                throw new Exception("No AI processes found for the given user and category.");
+            }
+
+            return aiResponses;
         }
 
         public async Task<JsonDocument> InterpretJson(string jsonData, int categoryId)

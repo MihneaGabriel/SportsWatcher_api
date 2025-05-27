@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Interfaces;
+using SportsWatcher.WebApi.Services;
 using System.Text.Json;
 
 namespace SportsWatcher.WebApi.Controllers
@@ -33,11 +34,10 @@ namespace SportsWatcher.WebApi.Controllers
 
             var aiResponsees = await _ollamaService.GetAiResponsesAsync(userId, categoryId);
 
-            if (aiResponsees  == null )
+            if (aiResponsees == null || !aiResponsees.Any())
             {
                 return NotFound();
             }
-
             return Ok(aiResponsees);
         }
 
@@ -72,7 +72,7 @@ namespace SportsWatcher.WebApi.Controllers
             JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData, aiResponseDto.CategoryId);
 
             // Save the parsed data to the database
-            //await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse);
+            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponseDto);
 
             return Ok(ollamaResponse);
         }

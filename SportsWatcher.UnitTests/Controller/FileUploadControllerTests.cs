@@ -72,18 +72,18 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             Assert.IsType<BadRequestObjectResult>(result);
         }
         [Fact]
-
-        public async Task GetAiResponse_ValidRequest_ReturnsOkResult()
+        public async Task GetAiResponse_ValidParameters_ReturnsOkResult()
         {
             // Arrange
-            var mockCsvParserService = new Mock<ICsvParserService>();
-            var mockOllamaService = new Mock<IOllamaService>();
-            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
             int userId = 1;
             int categoryId = 2;
-            var aiResponses = new List<AiResponse>();
+            var mockOllamaService = new Mock<IOllamaService>();
+            var mockCsvParserService = new Mock<ICsvParserService>();
+            var aiResponses = new List<AiResponse> { new AiResponse() };
             mockOllamaService.Setup(s => s.GetAiResponsesAsync(userId, categoryId))
                 .ReturnsAsync(aiResponses);
+
+            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
 
             // Act
             var result = await controller.GetAiResponse(userId, categoryId);
@@ -97,13 +97,14 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
         public async Task GetAiResponse_ServiceReturnsNull_ReturnsNotFound()
         {
             // Arrange
-            var mockCsvParserService = new Mock<ICsvParserService>();
-            var mockOllamaService = new Mock<IOllamaService>();
-            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
             int userId = 1;
             int categoryId = 2;
+            var mockOllamaService = new Mock<IOllamaService>();
+            var mockCsvParserService = new Mock<ICsvParserService>();
             mockOllamaService.Setup(s => s.GetAiResponsesAsync(userId, categoryId))
                 .ReturnsAsync((List<AiResponse>?)null);
+
+            var controller = new FileUploadController(mockCsvParserService.Object, mockOllamaService.Object);
 
             // Act
             var result = await controller.GetAiResponse(userId, categoryId);
@@ -111,7 +112,5 @@ namespace SportsWatcher.WebApi.UnitTests.Controllers
             // Assert
             Assert.IsType<NotFoundResult>(result);
         }
-
-
     }
 }

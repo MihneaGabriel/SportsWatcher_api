@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SportsWatcher.WebApi.DTOs;
 using SportsWatcher.WebApi.Interfaces;
+using SportsWatcher.WebApi.Services;
 using System.Text.Json;
 
 namespace SportsWatcher.WebApi.Controllers
@@ -18,27 +19,49 @@ namespace SportsWatcher.WebApi.Controllers
             _ollamaService = ollamaService;
         }
 
-        [HttpPost("Upload")]
-        public async Task<IActionResult> UploadCsv([FromForm] AiResponseDto aiResponse)
+        [HttpGet("GetAiResponse")]
+        public async Task<IActionResult> GetAiResponse([FromQuery] int userId, [FromQuery] int categoryId)
         {
-            if (aiResponse.File == null || aiResponse.File.Length == 0)
-            {
-                return BadRequest(new { message = "Invalid file. Please upload a non-empty CSV file." });
-            }
-
-            if (aiResponse.UserId <= 0)
+            if (userId <= 0)
             {
                 return BadRequest(new { message = "The user doesn't exist" });
             }
 
-            if (aiResponse.CategoryId <= 0)
+            if (categoryId <= 0)
+            {
+                return BadRequest(new { message = "This category do not exist" });
+            }
+
+            var aiResponsees = await _ollamaService.GetAiResponsesAsync(userId, categoryId);
+
+            if (aiResponsees == null || !aiResponsees.Any())
+            {
+                return NotFound();
+            }
+            return Ok(aiResponsees);
+        }
+
+        [HttpPost("Upload")]
+        public async Task<IActionResult> UploadCsv([FromForm] AiResponseDto aiResponseDto)
+        {
+            if (aiResponseDto.File == null || aiResponseDto.File.Length == 0)
+            {
+                return BadRequest(new { message = "Invalid file. Please upload a non-empty CSV file." });
+            }
+
+            if (aiResponseDto.UserId <= 0)
+            {
+                return BadRequest(new { message = "The user doesn't exist" });
+            }
+
+            if (aiResponseDto.CategoryId <= 0)
             {
                 return BadRequest(new { message = "This category do not exist" });
             }
 
             using var stream = new MemoryStream();
 
-            await aiResponse.File.CopyToAsync(stream);
+            await aiResponseDto.File.CopyToAsync(stream);
 
             stream.Position = 0;
 
@@ -46,10 +69,10 @@ namespace SportsWatcher.WebApi.Controllers
             string jsonData = _csvParserService.ParseCsvToJson(stream);
 
             // Send the JSON data to the Ollama service for interpretation
-            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData, aiResponse.CategoryId);
+            JsonDocument ollamaResponse = await _ollamaService.InterpretJson(jsonData, aiResponseDto.CategoryId);
 
             // Save the parsed data to the database
-            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponse);
+            await _ollamaService.CreateAiResponse(ollamaResponse, aiResponseDto);
 
             return Ok(ollamaResponse);
         }
